@@ -262,11 +262,8 @@ vector<OpenFileInfo> AzureDfsStorageFileSystem::Glob(const string &path, FileOpe
 	     &result);
 
 	if (!result.empty()) {
-		const auto path_result_prefix =
-		    (azure_url.is_fully_qualified ? (azure_url.prefix + azure_url.storage_account_name + '.' +
-		                                     azure_url.endpoint + '/' + azure_url.container)
-		                                  : (azure_url.prefix + azure_url.container)) +
-		    '/';
+		// keep the pattern's form, e.g. abfss://<container>@<storage account>.<endpoint>/
+		const auto path_result_prefix = path.substr(0, path.length() - azure_url.path.length());
 		for (auto &elt : result) {
 			elt.path = path_result_prefix + elt.path;
 		}
